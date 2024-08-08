@@ -7,6 +7,10 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Add logging to api
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -37,6 +41,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     }) ;
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireReaderRole", policy => policy.RequireRole("reader"));
+    options.AddPolicy("RequireWriterRole", policy => policy.RequireRole("writer"));
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,6 +58,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

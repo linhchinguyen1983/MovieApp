@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
+using MovieApi.Middlewares;
 using MovieApi.Model.DomainModel;
 using MovieApi.Model.Dto;
 using MovieApi.Repository;
+using System.Security.Claims;
 
 namespace MovieApi.Controllers
 {
@@ -13,14 +16,15 @@ namespace MovieApi.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly MovieDbContext _movieDbContext;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        public UserController(MovieDbContext movieDbContext, IMapper mapper, IUserRepository userRepository)
+        private readonly ILogger _logger;
+
+        public UserController(IMapper mapper, IUserRepository userRepository, ILogger<UserController> logger)
         {
-            _movieDbContext = movieDbContext;
             _mapper = mapper;
             _userRepository = userRepository;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -61,9 +65,17 @@ namespace MovieApi.Controllers
 
             return Ok(new LoginResponse
             {
-                status = true,
-                token = token
+                Status = true,
+                Token = token
             });
+        }
+
+        [HttpGet]
+        [Route("test")]
+        [SessionRequirement("reader"]
+        public async Task<IActionResult> TestAuthorization()
+        {
+            return Ok("Run success");
         }
 
     }

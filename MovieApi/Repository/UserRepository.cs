@@ -43,7 +43,7 @@ namespace MovieApi.Repository
             
         }
 
-        public Task<string> GenerateTokenAsync(User user)
+        public async Task<string> GenerateTokenAsync(User user)
         {
            
             // Create claim
@@ -54,17 +54,18 @@ namespace MovieApi.Repository
             };
 
             //select user's role from db
-            var userRoles = from ur in _dbContext.UserRoles
+            var userRoles = await (from ur in _dbContext.UserRoles
                            join r in _dbContext.Role on ur.RoleId equals r.Id
                            where ur.UserId == user.Id
                            select new
                            {
                                RoleName = r.Name
-                           };
+                           }).ToListAsync();
 
             // iterating in userRoles and add role to claims
             foreach(var role in userRoles)
             {
+                Console.WriteLine(role);
                 claims.Add(new Claim(ClaimTypes.Role, role.RoleName));
             }
 
@@ -79,7 +80,7 @@ namespace MovieApi.Repository
                     signingCredentials: credentials
                 );
 
-            return Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
+            return new JwtSecurityTokenHandler().WriteToken(token);
 
 
         }

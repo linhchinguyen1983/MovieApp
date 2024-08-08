@@ -2,7 +2,7 @@
 {
     public class LoginResponse
     {
-        public bool status {  get; set; }
-        public string token {  get; set; }
+        public bool Status {  get; set; }
+        public string Token {  get; set; }
     }
 }

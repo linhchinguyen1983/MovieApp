@@ -16,7 +16,7 @@ namespace MovieApi.Repository
         /// </summary>
         /// <param name="id">id of movie</param>
         /// <returns>return movie data if id exist in database , null if not exist</returns>
-        public Task<Movies> GetMovie(int id);
+        public Task<Movies> GetMovie(Guid id);
 
         /// <summary>
         /// get all movies in database
@@ -29,7 +29,7 @@ namespace MovieApi.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns>if delete successfully return true , else return false </returns>
-        public Task<bool> DeleteMovie(int id);
+        public Task<bool> DeleteMovie(Guid id);
 
 
     }

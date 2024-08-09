@@ -24,6 +24,7 @@ builder.Services.AddDbContext<MovieDbContext>(options =>
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -41,11 +42,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     }) ;
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("RequireReaderRole", policy => policy.RequireRole("reader"));
-    options.AddPolicy("RequireWriterRole", policy => policy.RequireRole("writer"));
-});
+
 
 var app = builder.Build();
 
@@ -58,7 +55,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -68,6 +68,19 @@ namespace MovieApi.Controllers
             else return BadRequest("Delete failed!");
         }
 
+        [HttpPut]
+        [SessionRequirement("writer")]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateMovie([FromBody] UpdateMovieDto updateMovieDto, [FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);  
+            }
+            var movie = await _movieRepository.UpdateMovieAsync(id, updateMovieDto);
+            if(movie != null) return StatusCode(500);
+            return Ok(_mapper.Map<MovieDto>(movie));
+        }
         
     }
 }

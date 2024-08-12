@@ -1,4 +1,5 @@
 ﻿using MovieApi.Model.DomainModel;
+using MovieApi.Model.Dto;
 
 namespace MovieApi.Repository
 {
@@ -30,7 +31,6 @@ namespace MovieApi.Repository
         /// <param name="id"></param>
         /// <returns>if delete successfully return true , else return false </returns>
         public Task<bool> DeleteMovieAsync(Guid id);
-
-
+        Task UpdateMovieAsync(Guid id, UpdateMovieDto updateMovieDto);
     }
 }

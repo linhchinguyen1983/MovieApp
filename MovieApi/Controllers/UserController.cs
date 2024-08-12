@@ -72,7 +72,7 @@ namespace MovieApi.Controllers
 
         [HttpGet]
         [Route("test")]
-        [SessionRequirement("reader"]
+        [SessionRequirement("reader")]
         public async Task<IActionResult> TestAuthorization()
         {
             return Ok("Run success");

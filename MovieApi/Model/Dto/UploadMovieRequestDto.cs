@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.NetworkInformation;
 
 namespace MovieApi.Model.Dto
@@ -15,8 +16,7 @@ namespace MovieApi.Model.Dto
         [Required(ErrorMessage = "Movie's url must not be null")]
         public string Url { get; set; }
         [Required(ErrorMessage = "Poster must not be null")]
-        public byte[] Poster { get; set ; }
-
-
+        //using base64 encode to save image data
+        public string Poster { get; set; }
     }
 }

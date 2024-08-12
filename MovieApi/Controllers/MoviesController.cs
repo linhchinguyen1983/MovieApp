@@ -26,7 +26,7 @@ namespace MovieApi.Controllers
         [SessionRequirement("reader", "writer")]
         public async Task<IActionResult> GetMovie([FromRoute] Guid id)
         {
-            var movie = await _movieRepository.GetMovie(id);
+            var movie = await _movieRepository.GetMovieAsync(id);
             //mapping data to dto and send it to client
             return Ok(_mapper.Map<MovieDto>(movie));
         }
@@ -35,7 +35,7 @@ namespace MovieApi.Controllers
         [SessionRequirement("reader", "writer")]
         public async Task<IActionResult> GetAllMovie()
         {
-            var movies = await _movieRepository.GetAllMovies();
+            var movies = await _movieRepository.GetAllMoviesAsync();
             //mapping data to dto and send it to client
             return Ok(_mapper.Map<List<MovieDto>>(movies));
         }
@@ -50,7 +50,7 @@ namespace MovieApi.Controllers
             // mapping dto to movie object
             Movies movie = _mapper.Map<Movies>(uploadMovieRequestDto);
             // save movie data to database
-            var newMovie = await _movieRepository.CreateMovie(movie);
+            var newMovie = await _movieRepository.CreateMovieAsync(movie);
             if(newMovie != null)
             {
                 return StatusCode(500);
@@ -63,7 +63,7 @@ namespace MovieApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteMovie([FromRoute] Guid id)
         {
-            var isDeleted = await _movieRepository.DeleteMovie(id);
+            var isDeleted = await _movieRepository.DeleteMovieAsync(id);
             if (isDeleted) return Ok("Delete success!");
             else return BadRequest("Delete failed!");
         }

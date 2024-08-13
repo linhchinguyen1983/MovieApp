@@ -29,9 +29,9 @@ namespace MovieApi.Controllers
             return Ok(_mapper.Map<GenreDto>(genre));
         }
         [HttpGet]
-        public async Task<IActionResult> GetList()
+        public async Task<IActionResult> GetList([FromQuery] int?status)
         {
-            var genres = await _genreRepository.GetAllGenreAsync();
+            var genres = await _genreRepository.GetAllGenreAsync(status);
             return Ok(_mapper.Map<List<GenreDto>>(genres));
         }
         [HttpPost]
@@ -60,9 +60,11 @@ namespace MovieApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var genre = await _genreRepository.UpdateGenreAsync(id, updateGenreDto);
-            if (genre != null) { return StatusCode(500); }
-            return Ok(_mapper.Map<GenreDto>(genre));
+
+            var genre = _mapper.Map<Genres>(updateGenreDto);
+            var updatedGenre = await _genreRepository.UpdateGenreAsync(id, genre);
+            if (updatedGenre == null) { return StatusCode(500); }
+            return Ok(_mapper.Map<GenreDto>(updatedGenre));
         }
     }
 }

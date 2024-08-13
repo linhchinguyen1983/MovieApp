@@ -22,7 +22,7 @@ namespace MovieApi.Repository
         
         public async Task<User?> AuthenticateAsync(string username, string password)
         {
-            var users = await _dbContext.User.Where(u => u.Email == username).ToListAsync();
+            var users = await _dbContext.Users.Where(u => u.Email == username).ToListAsync();
             if(users.IsNullOrEmpty() || users.Count != 1)
             {
                 return null;
@@ -55,7 +55,7 @@ namespace MovieApi.Repository
 
             //select user's role from db
             var userRoles = await (from ur in _dbContext.UserRoles
-                           join r in _dbContext.Role on ur.RoleId equals r.Id
+                           join r in _dbContext.Roles on ur.RoleId equals r.Id
                            where ur.UserId == user.Id
                            select new
                            {
@@ -91,7 +91,7 @@ namespace MovieApi.Repository
             foreach(var permission in permissions)
             {
                 // Check if the permission already exists
-                var roleId = await _dbContext.Role.Where(role => role.Name.ToLower() == permission.ToLower()).Select(role => role.Id).FirstOrDefaultAsync();
+                var roleId = await _dbContext.Roles.Where(role => role.Name.ToLower() == permission.ToLower()).Select(role => role.Id).FirstOrDefaultAsync();
 
                 UserRole useRole = new UserRole
                 {
@@ -114,7 +114,7 @@ namespace MovieApi.Repository
       
         public async Task<User?> RegisterAsync(User user)
         {
-            var checkUser = _dbContext.User.Where(u => u.Email == user.Email);
+            var checkUser = _dbContext.Users.Where(u => u.Email == user.Email);
             // Return null if email has been registed
             if (checkUser.Any())
             {
@@ -122,7 +122,7 @@ namespace MovieApi.Repository
             }
             try
             {
-                var entityEntry = await _dbContext.User.AddAsync(user);
+                var entityEntry = await _dbContext.Users.AddAsync(user);
                 await _dbContext.SaveChangesAsync();
                 return entityEntry.Entity;
             }

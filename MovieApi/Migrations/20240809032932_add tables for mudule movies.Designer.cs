@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieApi.Data;
 
@@ -11,9 +12,10 @@ using MovieApi.Data;
 namespace MovieApi.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    partial class MovieDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240809032932_add tables for mudule movies")]
+    partial class addtablesformudulemovies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,7 @@ namespace MovieApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
             modelBuilder.Entity("MovieApi.Model.DomainModel.Actors", b =>
                 {
                     b.Property<Guid>("Id")
@@ -55,11 +58,12 @@ namespace MovieApi.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-                        
+
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
                 });
+
             modelBuilder.Entity("MovieApi.Model.DomainModel.Movies", b =>
                 {
                     b.Property<Guid>("Id")
@@ -80,6 +84,7 @@ namespace MovieApi.Migrations
 
                     b.ToTable("Movies");
                 });
+
             modelBuilder.Entity("MovieApi.Model.DomainModel.Role", b =>
                 {
                     b.Property<Guid>("Id")

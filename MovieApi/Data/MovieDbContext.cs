@@ -10,10 +10,12 @@ namespace MovieApi.Data
             
         }
 
-        public DbSet<User> User { get; set; }
-        public DbSet<Role> Role { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
-        public DbSet<Genre> Genres { get; set; }
+        public DbSet<Genres> Genres { get; set; }
+        public DbSet<Actors> Actors { get; set; }
+        public DbSet<Movies> Movies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +37,8 @@ namespace MovieApi.Data
             };
 
             modelBuilder.Entity<Role>().HasData(roles);
+
+
         }
     }
 }

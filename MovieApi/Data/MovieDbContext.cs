@@ -17,6 +17,7 @@ namespace MovieApi.Data
         public DbSet<Actors> Actors { get; set; }
         public DbSet<Movies> Movies { get; set; }
         public DbSet<MovieActors> MoviesActors { get; set; }
+        public DbSet<News> News { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

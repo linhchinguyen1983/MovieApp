@@ -16,10 +16,12 @@ namespace MovieApi.Data
         public DbSet<Genres> Genres { get; set; }
         public DbSet<Actors> Actors { get; set; }
         public DbSet<Movies> Movies { get; set; }
+        public DbSet<MovieActors> MoviesActors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserRole>().HasKey(x => new { x.UserId , x.RoleId});
+            modelBuilder.Entity<MovieActors>().HasKey(x => new {x.MoviesId, x.ActorsId});
             base.OnModelCreating(modelBuilder);
 
             List<Role> roles = new List<Role>()

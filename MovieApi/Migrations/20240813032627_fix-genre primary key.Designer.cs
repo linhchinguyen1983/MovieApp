@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieApi.Data;
 
@@ -11,9 +12,10 @@ using MovieApi.Data;
 namespace MovieApi.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    partial class MovieDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240813032627_fix-genre primary key")]
+    partial class fixgenreprimarykey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,15 +70,23 @@ namespace MovieApi.Migrations
 
             modelBuilder.Entity("MovieApi.Model.DomainModel.MovieActors", b =>
                 {
-                    b.Property<Guid>("MoviesId")
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ActorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ActorsId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("MoviesId", "ActorsId");
+                    b.Property<Guid>("MoviesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MovieId", "ActorId");
 
                     b.HasIndex("ActorsId");
+
+                    b.HasIndex("MoviesId");
 
                     b.ToTable("MoviesActors");
                 });

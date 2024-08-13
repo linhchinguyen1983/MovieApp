@@ -2,9 +2,10 @@
 {
     public class MovieActors
     {
-        public Guid MovieId { get; set; }
-        public Guid ActorId { get; set; }
+        public Guid MoviesId { get; set; }
+        public Guid ActorsId { get; set; }
 
+        //Navigate propperties
         public Movies Movies { get; set; }
         public Actors Actors { get; set; }
     }

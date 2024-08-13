@@ -18,13 +18,11 @@ namespace MovieApi.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        private readonly ILogger _logger;
 
-        public UserController(IMapper mapper, IUserRepository userRepository, ILogger<UserController> logger)
+        public UserController(IMapper mapper, IUserRepository userRepository)
         {
             _mapper = mapper;
             _userRepository = userRepository;
-            _logger = logger;
         }
 
         [HttpPost]

@@ -1,35 +1,42 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieApi.Data;
 using MovieApi.Model.DomainModel;
+using MovieApi.Model.Dto;
+using MovieApi.Repository;
 
 namespace MovieApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/genre")]
     [ApiController]
     
     public class GenreController : ControllerBase
     {
-        MovieDbContext movie;
-        public GenreController(MovieDbContext db) {
-            movie = db;
-        
+        private readonly IGenreRepository _genreRepository;
+        private readonly IMapper _mapper;
+        public GenreController(IGenreRepository genreRepository, IMapper mapper) {
+            _genreRepository = genreRepository;
+            _mapper = mapper;
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
+        {
+
         }
         [HttpGet]
-        [Route("/Genre/List")]
-        public IActionResult GetList()
+        public async Task<IActionResult> GetList()
         {
-            return Ok(new {data = movie.Genres.ToList()});
+            var genres = await _genreRepository.GetAllGenreAsync();
+            return Ok(_mapper.Map<Genres>(genres));
         }
         [HttpPost]
-        [Route("/Genre/Insert")]
-        public IActionResult AddGenre(int id, string name, string des) {
-            Genre g = new Genre();
-            g.Name = name;
-            g.Description = des;
-            movie.Genres.Add(g);
-            movie.SaveChanges();
-            return Ok(new {data = movie.Genres.ToList()});
+        public async Task<IActionResult> AddGenre([FromBody] AddGenreRequestDto addGenreRequestDto) {
+            var genre = _mapper.Map<Genres>(addGenreRequestDto);
+            var newGenre = await _genreRepository.AddGenreAsync(genre);
+            return Ok(_mapper.Map<GenreDto>(newGenre));
         
         }
     }

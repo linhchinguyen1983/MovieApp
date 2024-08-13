@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieApi.Data;
 
@@ -11,9 +12,10 @@ using MovieApi.Data;
 namespace MovieApi.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    partial class MovieDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240813031248_fix-genre")]
+    partial class fixgenre
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,21 +66,6 @@ namespace MovieApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
-                });
-
-            modelBuilder.Entity("MovieApi.Model.DomainModel.MovieActors", b =>
-                {
-                    b.Property<Guid>("MoviesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ActorsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("MoviesId", "ActorsId");
-
-                    b.HasIndex("ActorsId");
-
-                    b.ToTable("MoviesActors");
                 });
 
             modelBuilder.Entity("MovieApi.Model.DomainModel.Movies", b =>
@@ -182,25 +169,6 @@ namespace MovieApi.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
-                });
-
-            modelBuilder.Entity("MovieApi.Model.DomainModel.MovieActors", b =>
-                {
-                    b.HasOne("MovieApi.Model.DomainModel.Actors", "Actors")
-                        .WithMany()
-                        .HasForeignKey("ActorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MovieApi.Model.DomainModel.Movies", "Movies")
-                        .WithMany()
-                        .HasForeignKey("MoviesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Actors");
-
-                    b.Navigation("Movies");
                 });
 
             modelBuilder.Entity("MovieApi.Model.DomainModel.UserRole", b =>

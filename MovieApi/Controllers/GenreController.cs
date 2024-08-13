@@ -24,7 +24,7 @@ namespace MovieApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-
+            return Ok();
         }
         [HttpGet]
         public async Task<IActionResult> GetList()

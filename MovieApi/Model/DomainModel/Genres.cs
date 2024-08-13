@@ -7,5 +7,8 @@ namespace MovieApi.Model.DomainModel
         [Key]
         public Guid Id {  get; set; }
         public string Name { get; set; }
+        // set defaul valuse Status = 1
+        public int Status { get; set; } = 1;
+        public Genres() { Status = 1; }
     }
 }

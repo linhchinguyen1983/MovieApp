@@ -32,6 +32,11 @@ namespace MovieApi.Repository
         /// <returns></returns>
         Task<string> GenerateTokenAsync(User user);
 
-        string? GetUserIdFromTokenAsync(string token);
+        /// <summary>
+        /// get user id from token
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns> return user id</returns>
+        public string? GetUserIdFromTokenAsync(string token);
     }
 }

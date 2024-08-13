@@ -31,6 +31,13 @@ namespace MovieApi.Repository
         /// <param name="id"></param>
         /// <returns>if delete successfully return true , else return false </returns>
         public Task<bool> DeleteMovieAsync(Guid id);
-        Task UpdateMovieAsync(Guid id, UpdateMovieDto updateMovieDto);
+
+        /// <summary>
+        /// update movie in database
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="updateMovieDto"></param>
+        /// <returns></returns>
+        public Task<Movies> UpdateMovieAsync(Guid id, UpdateMovieDto updateMovieDto);
     }
 }

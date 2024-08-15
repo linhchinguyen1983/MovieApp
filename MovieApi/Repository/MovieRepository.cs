@@ -61,7 +61,6 @@ namespace MovieApi.Repository
             if (movie != null) { return null; }
             else
             {
-                movie.Url = updateMovieDto.Url;
                 movie.Title = updateMovieDto.Title;
                 movie.Description = updateMovieDto.Description;
                 movie.AgeRating = updateMovieDto.AgeRating;

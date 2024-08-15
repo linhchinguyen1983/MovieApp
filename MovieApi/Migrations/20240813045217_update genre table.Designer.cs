@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieApi.Data;
 
@@ -11,9 +12,10 @@ using MovieApi.Data;
 namespace MovieApi.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    partial class MovieDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240813045217_update genre table")]
+    partial class updategenretable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,30 +118,6 @@ namespace MovieApi.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("MovieApi.Model.DomainModel.News", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("News");
-                });
-
             modelBuilder.Entity("MovieApi.Model.DomainModel.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -158,17 +136,12 @@ namespace MovieApi.Migrations
                         new
                         {
                             Id = new Guid("79e41692-64f5-4789-ac63-f266f7b8ac8e"),
-                            Name = "admin"
+                            Name = "reader"
                         },
                         new
                         {
                             Id = new Guid("0a1ab76c-f48f-4a5c-bb96-322f0b94328a"),
-                            Name = "user"
-                        },
-                        new
-                        {
-                            Id = new Guid("c005b7d5-ffc0-45a2-bd74-12a780fd9b61"),
-                            Name = "vip user"
+                            Name = "writer"
                         });
                 });
 

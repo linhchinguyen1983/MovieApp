@@ -49,8 +49,8 @@ namespace MovieApi.Repository
             // Create claim
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Email, user.Email),
             };
 
             //select user's role from db
@@ -93,7 +93,7 @@ namespace MovieApi.Repository
                 // Check if the permission already exists
                 var roleId = await _dbContext.Roles.Where(role => role.Name.ToLower() == permission.ToLower()).Select(role => role.Id).FirstOrDefaultAsync();
 
-                UserRole useRole = new UserRole
+                UserRole useRole = new()
                 {
                     UserId = user.Id,
                     RoleId = roleId,

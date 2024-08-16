@@ -19,33 +19,31 @@ namespace MovieApi.Repository
             _dbContext = dbContext;
             _configuration = configuration;
         }
-        
+
         public async Task<User?> AuthenticateAsync(string username, string password)
         {
             var users = await _dbContext.Users.Where(u => u.Email == username).ToListAsync();
-            if(users.IsNullOrEmpty() || users.Count != 1)
+            if (users.IsNullOrEmpty() || users.Count != 1)
             {
                 return null;
             }
-            try 
+            try
             {
                 var user = users.First();
-                if (user.Password == password)
-                {
+                if (string.Equals(password, user.Password))
                     return user;
-                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
             return null;
-            
+
         }
 
         public async Task<string> GenerateTokenAsync(User user)
         {
-           
+
             // Create claim
             var claims = new List<Claim>()
             {
@@ -55,15 +53,15 @@ namespace MovieApi.Repository
 
             //select user's role from db
             var userRoles = await (from ur in _dbContext.UserRoles
-                           join r in _dbContext.Roles on ur.RoleId equals r.Id
-                           where ur.UserId == user.Id
-                           select new
-                           {
-                               RoleName = r.Name
-                           }).ToListAsync();
+                                   join r in _dbContext.Roles on ur.RoleId equals r.Id
+                                   where ur.UserId == user.Id
+                                   select new
+                                   {
+                                       RoleName = r.Name
+                                   }).ToListAsync();
 
             // iterating in userRoles and add role to claims
-            foreach(var role in userRoles)
+            foreach (var role in userRoles)
             {
                 Console.WriteLine(role);
                 claims.Add(new Claim(ClaimTypes.Role, role.RoleName));
@@ -85,10 +83,10 @@ namespace MovieApi.Repository
 
         }
 
-        public async Task<bool> GivePermission(User user , List<string> permissions)
+        public async Task<bool> GivePermission(User user, List<string> permissions)
         {
             permissions = permissions.Distinct().ToList();
-            foreach(var permission in permissions)
+            foreach (var permission in permissions)
             {
                 // Check if the permission already exists
                 var roleId = await _dbContext.Roles.Where(role => role.Name.ToLower() == permission.ToLower()).Select(role => role.Id).FirstOrDefaultAsync();
@@ -111,7 +109,7 @@ namespace MovieApi.Repository
             return true;
         }
 
-      
+
         public async Task<User?> RegisterAsync(User user)
         {
             var checkUser = _dbContext.Users.Where(u => u.Email == user.Email);
@@ -126,11 +124,11 @@ namespace MovieApi.Repository
                 await _dbContext.SaveChangesAsync();
                 return entityEntry.Entity;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return null;
             }
-           
+
         }
 
         public string? GetUserIdFromTokenAsync(string token)
@@ -141,6 +139,31 @@ namespace MovieApi.Repository
             var userIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
 
             return userIdClaim?.Value;
+        }
+
+        public async Task<bool> UpdateUser(User user)
+        {
+            try
+            {
+                var exitingUser = await _dbContext.Users.FindAsync(user.Id);
+                if (exitingUser == null) return false;
+
+                exitingUser.Name = user.Name;
+                exitingUser.Email = user.Email;
+                exitingUser.Password = user.Password;
+                exitingUser.PhoneNumber = user.PhoneNumber;
+                exitingUser.BirthDate = user.BirthDate;
+
+                _dbContext.Entry(exitingUser).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
         }
 
     }

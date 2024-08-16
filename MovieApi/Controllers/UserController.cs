@@ -76,5 +76,12 @@ namespace MovieApi.Controllers
             return Ok("Run success");
         }
 
+        [HttpPut]
+        [Route("RewritePassword")]
+        public async Task<IActionResult> RewritePassword([FromRoute] Guid id, [FromBody] RewritePasswordDto rewritePasswordDto)
+        {
+            //var user = await _userRepository.
+            return Ok();
+        }
     }
 }

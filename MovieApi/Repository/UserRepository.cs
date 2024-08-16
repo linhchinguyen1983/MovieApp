@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MovieApi.Data;
 using MovieApi.Model.DomainModel;
+using MovieApi.Model.Dto;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -141,30 +142,29 @@ namespace MovieApi.Repository
             return userIdClaim?.Value;
         }
 
-        public async Task<bool> UpdateUser(User user)
+        public async Task<User> UpdateUserAsync(Guid id, UpdateUserDto user)
         {
             try
             {
-                var exitingUser = await _dbContext.Users.FindAsync(user.Id);
-                if (exitingUser == null) return false;
+                var exitingUser = await _dbContext.Users.FindAsync(id);
+                if (exitingUser != null)
+                {
+                    exitingUser.Name = string.IsNullOrEmpty(user.Name) ? exitingUser.Name : user.Name;
+                    exitingUser.Email = string.IsNullOrEmpty(user.Email) ? exitingUser.Email : user.Email;
+                    exitingUser.Password = string.IsNullOrEmpty(user.Password) ? exitingUser.Password : user.Password;
+                    exitingUser.PhoneNumber = string.IsNullOrEmpty(user.PhoneNumber) ? exitingUser.PhoneNumber : user.PhoneNumber;
+                    exitingUser.BirthDate = user.BirthDate.HasValue ? user.BirthDate : exitingUser.BirthDate;
 
-                exitingUser.Name = user.Name;
-                exitingUser.Email = user.Email;
-                exitingUser.Password = user.Password;
-                exitingUser.PhoneNumber = user.PhoneNumber;
-                exitingUser.BirthDate = user.BirthDate;
+                    await _dbContext.SaveChangesAsync();
 
-                _dbContext.Entry(exitingUser).State = EntityState.Modified;
-                await _dbContext.SaveChangesAsync();
-
-                return true;
+                    return exitingUser;
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
             }
+            return null;
         }
-
     }
 }

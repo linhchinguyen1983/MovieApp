@@ -1,4 +1,5 @@
 ﻿using MovieApi.Model.DomainModel;
+using MovieApi.Model.Dto;
 
 namespace MovieApi.Repository
 {
@@ -23,7 +24,7 @@ namespace MovieApi.Repository
         /// </summary>
         /// <param name="permissions">list permisson of user</param>
         /// <returns>true if success , false if failed</returns>
-        Task<bool> GivePermission(User user, List<string> permissions); 
+        Task<bool> GivePermission(User user, List<string> permissions);
 
         /// <summary>
         /// 
@@ -38,5 +39,7 @@ namespace MovieApi.Repository
         /// <param name="token"></param>
         /// <returns> return user id</returns>
         public string? GetUserIdFromTokenAsync(string token);
+
+        public Task<User> UpdateUserAsync(Guid id, UpdateUserDto user);
     }
 }

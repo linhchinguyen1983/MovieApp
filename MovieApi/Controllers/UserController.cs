@@ -76,5 +76,12 @@ namespace MovieApi.Controllers
             return Ok("Run success");
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<User> GetUserFromIdAsync([FromRoute] Guid id)
+        {
+            return null;
+        }
+
     }
 }

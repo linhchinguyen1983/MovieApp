@@ -52,7 +52,7 @@ namespace MovieApi.Controllers
         {
             if (!ModelState.IsValid) { return BadRequest(); }
 
-            var user = await _userRepository.AuthenticateAsync(loginRequest.Email , loginRequest.Password);
+            var user = await _userRepository.AuthenticateAsync(loginRequest.Email, loginRequest.Password);
 
             if (user == null)
             {
@@ -76,5 +76,14 @@ namespace MovieApi.Controllers
             return Ok("Run success");
         }
 
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateUser ([FromRoute] Guid id, [FromBody] UpdateUserDto updateUserDto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var user = await _userRepository.UpdateUserAsync(id, updateUserDto);
+            if (user == null) return StatusCode(500);
+            return Ok(_mapper.Map<User>(user));
+        }
     }
 }

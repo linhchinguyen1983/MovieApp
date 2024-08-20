@@ -89,17 +89,14 @@ namespace MovieApi.Controllers
         /// hoặc phản hồi lỗi nếu token không hợp lệ hoặc người dùng không tồn tại.
         /// </returns>
         [Authorize]
-        [HttpGet("profile")]
+        [HttpGet("Profile")]
         public async Task<IActionResult> GetUserFromTokenAsync()
         {
-            // Lấy claim "NameIdentifier" từ token
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-            {
-                return Unauthorized();
-            }
+            // Lấy ID người dùng từ token
+            var userId = GetUserIdFromToken();
 
-            var userId = Guid.Parse(userIdClaim.Value);
+            // Kiểm tra xem userId có hợp lệ không
+            if (userId == Guid.Empty) return Unauthorized();
 
             // Truy vấn cơ sở dữ liệu để lấy thông tin người dùng
             var user = await _userRepository.GetUserByIdAsync(userId);
@@ -108,18 +105,41 @@ namespace MovieApi.Controllers
                 return NotFound();
             }
 
+            user.Password = "";
+
             return Ok(user);
         }
 
 
         [HttpPut]
-        [Route("{token}")]
-        public async Task<IActionResult> UpdateUser([FromHeader] Guid id, [FromBody] UpdateUserDto updateUserDto)
+        [Route("Update")]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserDto updateUserDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var id = GetUserIdFromToken();
+
+            if (id == Guid.Empty) return Unauthorized();
+
             var user = await _userRepository.UpdateUserAsync(id, updateUserDto);
             if (user == null) return StatusCode(500);
             return Ok(_mapper.Map<User>(user));
+        }
+
+        /// <summary>
+        /// Lấy ID người dùng từ token xác thực hiện tại.
+        /// Trả về Guid.Empty nếu không tìm thấy claim "NameIdentifier" trong token.
+        /// </summary>
+        /// <returns>ID người dùng dạng Guid</returns>
+        private Guid GetUserIdFromToken()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Guid.Empty;
+            }
+
+            return Guid.Parse(userIdClaim.Value);
         }
     }
 }

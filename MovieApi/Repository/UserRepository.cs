@@ -166,5 +166,11 @@ namespace MovieApi.Repository
             }
             return null;
         }
+
+        public async Task<User?> GetUserByIdAsync(Guid userId)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        }
+
     }
 }

@@ -8,6 +8,7 @@ using MovieApi.Middlewares;
 using MovieApi.Model.DomainModel;
 using MovieApi.Model.Dto;
 using MovieApi.Repository;
+using System.Net;
 using System.Security.Claims;
 
 namespace MovieApi.Controllers
@@ -76,14 +77,69 @@ namespace MovieApi.Controllers
             return Ok("Run success");
         }
 
+        //Chạy ứng dụng của bạn và mở Swagger UI(thường có địa chỉ là https://localhost:5001/swagger).
+        //Đăng nhập để lấy JWT token.
+        //Sử dụng nút "Authorize" trong Swagger UI để nhập token vào trường Authorization. Định dạng: Bearer [token]
+        //Sau đó, bạn có thể thực hiện yêu cầu GET đến endpoint profile mà không cần truyền tham số, Swagger sẽ tự động thêm token vào header.
+        /// <summary>
+        /// Lấy thông tin người dùng từ token JWT.
+        /// </summary>
+        /// <returns>
+        /// Trả về thông tin của người dùng nếu token hợp lệ, 
+        /// hoặc phản hồi lỗi nếu token không hợp lệ hoặc người dùng không tồn tại.
+        /// </returns>
+        [Authorize]
+        [HttpGet("Profile")]
+        public async Task<IActionResult> GetUserFromTokenAsync()
+        {
+            // Lấy ID người dùng từ token
+            var userId = GetUserIdFromToken();
+
+            // Kiểm tra xem userId có hợp lệ không
+            if (userId == Guid.Empty) return Unauthorized();
+
+            // Truy vấn cơ sở dữ liệu để lấy thông tin người dùng
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.Password = "";
+
+            return Ok(user);
+        }
+
+
         [HttpPut]
-        [Route("{id}")]
-        public async Task<IActionResult> UpdateUser ([FromRoute] Guid id, [FromBody] UpdateUserDto updateUserDto)
+        [Route("Update")]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserDto updateUserDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var id = GetUserIdFromToken();
+
+            if (id == Guid.Empty) return Unauthorized();
+
             var user = await _userRepository.UpdateUserAsync(id, updateUserDto);
             if (user == null) return StatusCode(500);
             return Ok(_mapper.Map<User>(user));
+        }
+
+        /// <summary>
+        /// Lấy ID người dùng từ token xác thực hiện tại.
+        /// Trả về Guid.Empty nếu không tìm thấy claim "NameIdentifier" trong token.
+        /// </summary>
+        /// <returns>ID người dùng dạng Guid</returns>
+        private Guid GetUserIdFromToken()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Guid.Empty;
+            }
+
+            return Guid.Parse(userIdClaim.Value);
         }
     }
 }

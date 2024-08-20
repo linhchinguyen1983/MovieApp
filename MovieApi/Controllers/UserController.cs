@@ -69,14 +69,6 @@ namespace MovieApi.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("test")]
-        [SessionRequirement("reader")]
-        public async Task<IActionResult> TestAuthorization()
-        {
-            return Ok("Run success");
-        }
-
         //Chạy ứng dụng của bạn và mở Swagger UI(thường có địa chỉ là https://localhost:5001/swagger).
         //Đăng nhập để lấy JWT token.
         //Sử dụng nút "Authorize" trong Swagger UI để nhập token vào trường Authorization. Định dạng: Bearer [token]

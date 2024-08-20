@@ -8,6 +8,7 @@ using MovieApi.Middlewares;
 using MovieApi.Model.DomainModel;
 using MovieApi.Model.Dto;
 using MovieApi.Repository;
+using System.Net;
 using System.Security.Claims;
 
 namespace MovieApi.Controllers
@@ -76,16 +77,44 @@ namespace MovieApi.Controllers
             return Ok("Run success");
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<User> GetUserFromIdAsync([FromRoute] Guid id)
+        //Chạy ứng dụng của bạn và mở Swagger UI(thường có địa chỉ là https://localhost:5001/swagger).
+        //Đăng nhập để lấy JWT token.
+        //Sử dụng nút "Authorize" trong Swagger UI để nhập token vào trường Authorization. Định dạng: Bearer [token]
+        //Sau đó, bạn có thể thực hiện yêu cầu GET đến endpoint profile mà không cần truyền tham số, Swagger sẽ tự động thêm token vào header.
+        /// <summary>
+        /// Lấy thông tin người dùng từ token JWT.
+        /// </summary>
+        /// <returns>
+        /// Trả về thông tin của người dùng nếu token hợp lệ, 
+        /// hoặc phản hồi lỗi nếu token không hợp lệ hoặc người dùng không tồn tại.
+        /// </returns>
+        [Authorize]
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetUserFromTokenAsync()
         {
-            return null;
+            // Lấy claim "NameIdentifier" từ token
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+
+            var userId = Guid.Parse(userIdClaim.Value);
+
+            // Truy vấn cơ sở dữ liệu để lấy thông tin người dùng
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
         }
 
+
         [HttpPut]
-        [Route("{id}")]
-        public async Task<IActionResult> UpdateUser ([FromRoute] Guid id, [FromBody] UpdateUserDto updateUserDto)
+        [Route("{token}")]
+        public async Task<IActionResult> UpdateUser([FromHeader] Guid id, [FromBody] UpdateUserDto updateUserDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var user = await _userRepository.UpdateUserAsync(id, updateUserDto);

@@ -10,6 +10,7 @@ namespace MovieApi.Model.Dto
         public string Content { get; set; }
         [Required(ErrorMessage = "Movie id must not null")]
         public Guid MoviesId { get; set; }
+        public Guid UserId { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

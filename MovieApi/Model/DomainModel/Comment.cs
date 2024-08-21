@@ -10,6 +10,7 @@ namespace MovieApi.Model.DomainModel
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastUpdate { get; set; }
         public Guid MoviesId { get; set; }
+        public Guid UserId { get; set; }
 
         public Movies Movies { get; set; }
     }

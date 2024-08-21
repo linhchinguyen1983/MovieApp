@@ -23,7 +23,7 @@ namespace MovieApi.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        [SessionRequirement("user", "admin" , "vip user")]
+        //[SessionRequirement("user", "admin" , "vip user")]
         public async Task<IActionResult> GetMovie([FromRoute] Guid id)
         {
             var movie = await _movieRepository.GetMovieAsync(id);
@@ -32,7 +32,7 @@ namespace MovieApi.Controllers
         }
 
         [HttpGet]
-        [SessionRequirement("user", "admin", "vip user")]
+        //[SessionRequirement("user", "admin", "vip user")]
         public async Task<IActionResult> GetAllMovie()
         {
             var movies = await _movieRepository.GetAllMoviesAsync();
@@ -40,7 +40,7 @@ namespace MovieApi.Controllers
             return Ok(_mapper.Map<List<MovieDto>>(movies));
         }
         [HttpPost]
-        [SessionRequirement("admin")]
+        //[SessionRequirement("admin")]
         public async Task<IActionResult> UploadMovie([FromBody] UploadMovieRequestDto uploadMovieRequestDto)
         {
             if(!ModelState.IsValid) 
@@ -59,7 +59,7 @@ namespace MovieApi.Controllers
         }
 
         [HttpDelete]
-        [SessionRequirement("admin")]
+        //[SessionRequirement("admin")]
         [Route("{id}")]
         public async Task<IActionResult> DeleteMovie([FromRoute] Guid id)
         {
@@ -69,7 +69,7 @@ namespace MovieApi.Controllers
         }
 
         [HttpPut]
-        [SessionRequirement("admin")]
+        //[SessionRequirement("admin")]
         [Route("{id}")]
         public async Task<IActionResult> UpdateMovie([FromBody] UpdateMovieDto updateMovieDto, [FromRoute] Guid id)
         {

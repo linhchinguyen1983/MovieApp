@@ -20,6 +20,7 @@ namespace MovieApi.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<Episode> Episodes { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

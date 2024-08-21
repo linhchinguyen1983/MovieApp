@@ -39,7 +39,7 @@ namespace MovieApi.Controllers
             var newUser = await _userRepository.RegisterAsync(user);
             if (newUser != null)
             {
-                await _userRepository.GivePermission(newUser, requestRegister.Roles);
+                //await _userRepository.GivePermission(newUser, requestRegister.Roles);
                 return Ok(newUser);
             }
 
@@ -60,12 +60,13 @@ namespace MovieApi.Controllers
                 return BadRequest("Email or password is in correct!");
             }
 
-            var token = await _userRepository.GenerateTokenAsync(user);
+            //var token = await _userRepository.GenerateTokenAsync(user);
 
             return Ok(new LoginResponse
             {
                 Status = true,
-                Token = token
+                //Token = token
+                UserId = user.Id,
             });
         }
 
@@ -80,22 +81,13 @@ namespace MovieApi.Controllers
         /// Trả về thông tin của người dùng nếu token hợp lệ, 
         /// hoặc phản hồi lỗi nếu token không hợp lệ hoặc người dùng không tồn tại.
         /// </returns>
-        [Authorize]
-        [HttpGet("Profile")]
-        public async Task<IActionResult> GetUserFromTokenAsync()
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetUserFromTokenAsync([FromRoute] Guid id)
         {
-            // Lấy ID người dùng từ token
-            var userId = GetUserIdFromToken();
-
-            // Kiểm tra xem userId có hợp lệ không
-            if (userId == Guid.Empty) return Unauthorized();
-
             // Truy vấn cơ sở dữ liệu để lấy thông tin người dùng
-            var user = await _userRepository.GetUserByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            var user = await _userRepository.GetUserByIdAsync(id);
+            if (user == null) return NotFound();
 
             user.Password = "";
 
@@ -105,33 +97,13 @@ namespace MovieApi.Controllers
 
         [HttpPut]
         [Route("Update")]
-        public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserDto updateUserDto)
+        public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid userId, [FromBody] UpdateUserDto updateUserDto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (userId == Guid.Empty) return Unauthorized();
 
-            var id = GetUserIdFromToken();
-
-            if (id == Guid.Empty) return Unauthorized();
-
-            var user = await _userRepository.UpdateUserAsync(id, updateUserDto);
+            var user = await _userRepository.UpdateUserAsync(userId, updateUserDto);
             if (user == null) return StatusCode(500);
             return Ok(_mapper.Map<User>(user));
-        }
-
-        /// <summary>
-        /// Lấy ID người dùng từ token xác thực hiện tại.
-        /// Trả về Guid.Empty nếu không tìm thấy claim "NameIdentifier" trong token.
-        /// </summary>
-        /// <returns>ID người dùng dạng Guid</returns>
-        private Guid GetUserIdFromToken()
-        {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-            {
-                return Guid.Empty;
-            }
-
-            return Guid.Parse(userIdClaim.Value);
         }
     }
 }

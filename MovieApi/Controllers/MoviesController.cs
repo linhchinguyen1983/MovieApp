@@ -51,7 +51,7 @@ namespace MovieApi.Controllers
             Movies movie = _mapper.Map<Movies>(uploadMovieRequestDto);
             // save movie data to database
             var newMovie = await _movieRepository.CreateMovieAsync(movie);
-            if(newMovie != null)
+            if(newMovie == null)
             {
                 return StatusCode(500);
             }

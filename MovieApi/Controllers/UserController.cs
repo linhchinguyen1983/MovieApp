@@ -8,6 +8,7 @@ using MovieApi.Middlewares;
 using MovieApi.Model.DomainModel;
 using MovieApi.Model.Dto;
 using MovieApi.Repository;
+using System;
 using System.Net;
 using System.Security.Claims;
 
@@ -104,14 +105,10 @@ namespace MovieApi.Controllers
 
 
         [HttpPut]
-        [Route("Update")]
-        public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserDto updateUserDto)
+        [Route("update/{id}")]
+        public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid id,[FromBody] UpdateUserDto updateUserDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var id = GetUserIdFromToken();
-
-            if (id == Guid.Empty) return Unauthorized();
 
             var user = await _userRepository.UpdateUserAsync(id, updateUserDto);
             if (user == null) return StatusCode(500);
@@ -133,5 +130,19 @@ namespace MovieApi.Controllers
 
             return Guid.Parse(userIdClaim.Value);
         }
+        [HttpGet]
+        [Route("users")]
+        public async Task<IActionResult> GetUserList()
+        {
+            var users = await _userRepository.GetUserListAsync();
+            if (users == null || users.Count == 0)
+            {
+                return NotFound("No users found.");
+            }
+
+            var userDtos = _mapper.Map<List<UserDto>>(users);
+            return Ok(userDtos);
+        }
+
     }
 }

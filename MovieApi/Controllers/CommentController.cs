@@ -25,7 +25,7 @@ namespace MovieApi.Controllers
         public async Task<IActionResult> GetAllComment([FromRoute] Guid movieId)
         {
             var comments = await _commentRepository.GetAllCommentAsync(movieId);
-            return Ok(_mapper.Map<CommentDto>(comments));
+            return Ok(_mapper.Map<List<CommentDto>>(comments));
         }
 
         [HttpGet]
@@ -41,8 +41,9 @@ namespace MovieApi.Controllers
         [Route("comment")]
         public async Task<IActionResult> CreateComment([FromBody] PostCommentDto postCommentDto)
         {
-            var comment = _mapper.Map<CommentDto>(postCommentDto);
-            return Ok(comment);
+            var comment = _mapper.Map<Comment>(postCommentDto);
+            var newComment =  await _commentRepository.AddCommentAsync(comment);
+            return Ok(_mapper.Map<CommentDto>(newComment));
         }
 
         [HttpDelete]

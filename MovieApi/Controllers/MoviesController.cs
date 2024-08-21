@@ -81,6 +81,12 @@ namespace MovieApi.Controllers
             if(movie != null) return StatusCode(500);
             return Ok(_mapper.Map<MovieDto>(movie));
         }
-        
+
+        [HttpPost]
+        [Route("/upload")]
+        public async Task<IActionResult> UploadMovie([FromBody] UploadMovieDto uploadMovieDto)
+        {
+
+        }
     }
 }

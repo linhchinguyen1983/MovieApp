@@ -86,7 +86,7 @@ namespace MovieApi.Controllers
         [Route("/upload")]
         public async Task<IActionResult> UploadMovie([FromBody] UploadMovieDto uploadMovieDto)
         {
-
+            return Ok();
         }
     }
 }

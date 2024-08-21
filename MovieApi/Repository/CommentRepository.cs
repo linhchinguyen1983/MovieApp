@@ -34,7 +34,14 @@ namespace MovieApi.Repository
         }
         public async Task<bool> DeleteAsync(Guid id)
         {
-            return await DeleteAsync(id);
+            var comment = await _movieDbContext.Comments.FindAsync(id);
+            if (comment != null) 
+            {
+                _movieDbContext.Comments.Remove(comment);   
+                await _movieDbContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
         public async Task<List<Comment>> GetAllCommentAsync(Guid movieId)
@@ -65,6 +72,21 @@ namespace MovieApi.Repository
                                      Content = c.Content,
                                  }).FirstOrDefaultAsync();
             return comment;
+        }
+
+        public async Task<Comment?> AddCommentAsync(Comment comment)
+        {
+            try
+            {
+                var newComment = await _movieDbContext.AddAsync(comment);
+                await _movieDbContext.SaveChangesAsync();
+                return newComment.Entity;
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
         }
     }
 }

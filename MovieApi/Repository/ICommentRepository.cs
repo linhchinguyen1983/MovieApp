@@ -12,5 +12,6 @@ namespace MovieApi.Repository
         public Task<bool> DeleteAsync(Guid id);
 
         public Task<Comment?> UpdateAsync(Guid id, Comment comment);
+        public Task<Comment?> AddCommentAsync(Comment comment);
     }
 }

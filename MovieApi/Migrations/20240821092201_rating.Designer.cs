@@ -12,7 +12,7 @@ using MovieApi.Data;
 namespace MovieApi.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    [Migration("20240821070904_rating")]
+    [Migration("20240821092201_rating")]
     partial class rating
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,7 +225,9 @@ namespace MovieApi.Migrations
 
                     b.HasIndex("MoviesId");
 
-                    b.ToTable("Rating");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("MovieApi.Model.DomainModel.Role", b =>
@@ -353,7 +355,15 @@ namespace MovieApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MovieApi.Model.DomainModel.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Movies");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MovieApi.Model.DomainModel.UserRole", b =>

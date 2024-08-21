@@ -16,6 +16,19 @@ namespace MovieApi.Repository
         {
             try
             {
+                if (rating.Star < 1 || rating.Star > 5)
+                {
+                    throw new ArgumentException("Rating must be between 1 and 5.");
+                }
+
+                var existingRating = await _dbContext.Ratings
+                    .AnyAsync(r => r.UserId == rating.UserId && r.MoviesId == rating.MoviesId);
+
+                if (existingRating)
+                {
+                    throw new InvalidOperationException("User can only rate a movie once.");
+                }
+
                 var newRating = await _dbContext.AddAsync(rating);
                 await _dbContext.SaveChangesAsync();
                 return newRating.Entity;
@@ -27,6 +40,7 @@ namespace MovieApi.Repository
             }
         }
 
+
         public async Task<double> AvgRating(Guid movieId)
         {
             try
@@ -35,7 +49,7 @@ namespace MovieApi.Repository
                               where r.MoviesId == movieId
                               select r.Star;
                 var avgRating = await ratings.AverageAsync();
-                return avgRating;
+                return Math.Round(avgRating, 1);
             }
             catch (Exception ex)
             {

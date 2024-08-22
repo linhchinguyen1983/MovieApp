@@ -172,5 +172,9 @@ namespace MovieApi.Repository
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
+        public async Task<List<User>> GetUserListAsync()
+        {
+            return await _dbContext.Users.ToListAsync();
+        }
     }
 }

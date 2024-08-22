@@ -133,5 +133,19 @@ namespace MovieApi.Controllers
 
             return Guid.Parse(userIdClaim.Value);
         }
+        [HttpGet]
+        [Route("users")]
+        public async Task<IActionResult> GetUserList()
+        {
+            var users = await _userRepository.GetUserListAsync();
+            if (users == null || users.Count == 0)
+            {
+                return NotFound("No users found.");
+            }
+
+            var userDtos = _mapper.Map<List<UserDto>>(users);
+            return Ok(userDtos);
+        }
+
     }
 }

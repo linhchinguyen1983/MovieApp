@@ -85,19 +85,5 @@ namespace MovieApi.Controllers
             if (user == null) return StatusCode(500);
             return Ok(_mapper.Map<User>(user));
         }
-        [HttpGet]
-        [Route("users")]
-        public async Task<IActionResult> GetUserList()
-        {
-            var users = await _userRepository.GetUserListAsync();
-            if (users == null || users.Count == 0)
-            {
-                return NotFound("No users found.");
-            }
-
-            var userDtos = _mapper.Map<List<UserDto>>(users);
-            return Ok(userDtos);
-        }
-
     }
 }

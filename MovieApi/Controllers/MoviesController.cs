@@ -37,7 +37,7 @@ namespace MovieApi.Controllers
         {
             var movies = await _movieRepository.GetAllMoviesAsync();
             //mapping data to dto and send it to client
-            return Ok(_mapper.Map<List<MovieDto>>(movies));
+            return Ok(_mapper.Map<List<Movies>>(movies));
         }
         [HttpPost]
         //[SessionRequirement("admin")]

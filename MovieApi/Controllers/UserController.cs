@@ -8,6 +8,7 @@ using MovieApi.Middlewares;
 using MovieApi.Model.DomainModel;
 using MovieApi.Model.Dto;
 using MovieApi.Repository;
+using System;
 using System.Net;
 using System.Security.Claims;
 

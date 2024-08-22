@@ -21,11 +21,13 @@ namespace MovieApi.Data
         public DbSet<News> News { get; set; }
         public DbSet<Episode> Episodes { get; set; }
         public DbSet<Rating> Ratings { get; set; }
+        public DbSet<MovieGenre> MovieGenres { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserRole>().HasKey(x => new { x.UserId , x.RoleId});
-            modelBuilder.Entity<MovieActors>().HasKey(x => new {x.MoviesId, x.ActorsId});
+            modelBuilder.Entity<UserRole>().HasKey(x => new { x.UserId, x.RoleId });
+            modelBuilder.Entity<MovieActors>().HasKey(x => new { x.MoviesId, x.ActorsId });
+            modelBuilder.Entity<MovieGenre>().HasKey(x => new { x.MoviesId, x.GenresId });
             base.OnModelCreating(modelBuilder);
 
             List<Role> roles = new()

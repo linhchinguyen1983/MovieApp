@@ -166,10 +166,5 @@ namespace MovieApi.Repository
             }
             return null;
         }
-
-        public async Task<List<User>> GetUserListAsync()
-        {
-            return await _dbContext.Users.ToListAsync();
-        }
     }
 }

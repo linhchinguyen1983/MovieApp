@@ -55,6 +55,20 @@ namespace MovieApi.Repository
             return movie;
         }
 
+        public async Task<List<Movies>> SearchMovieByNameAsync(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return new List<Movies>(); // Return empty list if name is null or whitespace
+            }
+
+            var movies = await _movieDbContext.Movies
+                .Where(m => EF.Functions.Like(m.Title, $"%{name}%"))
+                .ToListAsync();
+
+            return movies;
+        }
+
         public async Task<Movies> UpdateMovieAsync(Guid id, UpdateMovieDto updateMovieDto)
         {
             var movie = await _movieDbContext.Movies.FindAsync(id);

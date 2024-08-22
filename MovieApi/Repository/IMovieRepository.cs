@@ -39,5 +39,6 @@ namespace MovieApi.Repository
         /// <param name="updateMovieDto"></param>
         /// <returns></returns>
         public Task<Movies> UpdateMovieAsync(Guid id, UpdateMovieDto updateMovieDto);
+        public Task<List<Movies>> SearchMovieByNameAsync(string name);
     }
 }

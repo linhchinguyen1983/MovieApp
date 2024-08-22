@@ -9,6 +9,8 @@ namespace MovieApi.Mapper
         public MovieProfile()
         {
             CreateMap<Movies, UploadMovieRequestDto>().ReverseMap();
+            CreateMap<Movies, MovieDto>().ReverseMap();
+            CreateMap<Movies, UpdateMovieDto>().ReverseMap();
         }
     }
 }

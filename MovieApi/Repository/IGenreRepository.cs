@@ -7,7 +7,7 @@ namespace MovieApi.Repository
     public interface IGenreRepository
     {
         // get all genres in database
-        public Task<List<Genres>> GetAllGenreAsync();
+        public Task<List<Genres>> GetAllGenreAsync(int? status =null);
         // Insert genre to database
         public Task<Genres> AddGenreAsync(Genres genre);
         // get genres by id
@@ -15,6 +15,6 @@ namespace MovieApi.Repository
         // hide genres
         public Task<bool> DeleteGenreAsync(Guid id);
         // update Genre
-        public Task<bool> UpdateGenreAsync(Guid id, UpdateGenreDto updateGenreDto);
+        public Task<Genres>? UpdateGenreAsync(Guid id, Genres genre);
     }
 }

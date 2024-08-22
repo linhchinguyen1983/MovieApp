@@ -44,32 +44,40 @@ namespace MovieApi.Repository
             return true;
         }
 
-        public async Task<bool> UpdateGenreAsync(Guid id, UpdateGenreDto updateGenreDto)
+        public async Task<Genres>? UpdateGenreAsync(Guid id, Genres genre)
         {
-            var genre = await _dbContext.Genres.FindAsync(id);
-            if (genre == null) 
+            try
             {
-                Console.WriteLine($"Genre with Id {id} not found.");
-                return false;
-            }
-            else
-            {
-                genre.Status = updateGenreDto.Status;
-                genre.Name = updateGenreDto.Name;
+                var updateGenre = await _dbContext.Genres.FindAsync(id);
+                updateGenre.Status = genre.Status;
+                updateGenre.Name = genre.Name;
                 await _dbContext.SaveChangesAsync();
-                return true;
+                return updateGenre;
             }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            
+            
         }
 
-        public async Task<List<Genres>> GetAllGenreAsync()
+        public async Task<List<Genres>> GetAllGenreAsync(int? status = null)
         {
-            var genres = await _dbContext.Genres.ToListAsync();
-            return genres;
+            var query = _dbContext.Genres.AsQueryable();
+            if (status.HasValue)
+            {
+                return await _dbContext.Genres.Where(g => g.Status == status.Value).ToListAsync();
+            }
+            return await query.ToListAsync();
+           /* var genres = await _dbContext.Genres.Where(g => g.Status == 1).ToListAsync();
+            return genres;*/
         }
 
         public async Task<Genres> GetById(Guid id)
         {
             var genre = await _dbContext.Genres.FindAsync(id);
+            if (genre == null || genre.Status == 0) return null;
             return genre;
         }
 

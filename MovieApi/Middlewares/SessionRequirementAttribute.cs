@@ -9,7 +9,7 @@ namespace MovieApi.Middlewares
 {
     public class SessionRequirementAttribute : Attribute, IAuthorizationFilter
     {
-        private List<string> _roles;
+        private readonly List<string> _roles;
         public SessionRequirementAttribute(params string[] roles) 
         {
             _roles = roles.ToList();
@@ -29,13 +29,9 @@ namespace MovieApi.Middlewares
             if(roles != null)
             {
                foreach(var role in roles)
-                {
-                    if (!_roles.Contains(role))
-                    {
-                        context.HttpContext.Response.StatusCode = 401;
-                        return;
-                    }
-                }
+               {
+                    return;
+               }
             }
             if(roles == null)
             {

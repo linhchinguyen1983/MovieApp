@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MovieApi.Data;
 using MovieApi.Model.DomainModel;
+using MovieApi.Model.Dto;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -19,51 +20,49 @@ namespace MovieApi.Repository
             _dbContext = dbContext;
             _configuration = configuration;
         }
-        
+
         public async Task<User?> AuthenticateAsync(string username, string password)
         {
             var users = await _dbContext.Users.Where(u => u.Email == username).ToListAsync();
-            if(users.IsNullOrEmpty() || users.Count != 1)
+            if (users.IsNullOrEmpty() || users.Count != 1)
             {
                 return null;
             }
-            try 
+            try
             {
                 var user = users.First();
-                if (user.Password == password)
-                {
+                if (string.Equals(password, user.Password))
                     return user;
-                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
             return null;
-            
+
         }
 
         public async Task<string> GenerateTokenAsync(User user)
         {
-           
+
             // Create claim
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Email, user.Email),
             };
 
             //select user's role from db
             var userRoles = await (from ur in _dbContext.UserRoles
-                           join r in _dbContext.Roles on ur.RoleId equals r.Id
-                           where ur.UserId == user.Id
-                           select new
-                           {
-                               RoleName = r.Name
-                           }).ToListAsync();
+                                   join r in _dbContext.Roles on ur.RoleId equals r.Id
+                                   where ur.UserId == user.Id
+                                   select new
+                                   {
+                                       RoleName = r.Name
+                                   }).ToListAsync();
 
             // iterating in userRoles and add role to claims
-            foreach(var role in userRoles)
+            foreach (var role in userRoles)
             {
                 Console.WriteLine(role);
                 claims.Add(new Claim(ClaimTypes.Role, role.RoleName));
@@ -85,15 +84,15 @@ namespace MovieApi.Repository
 
         }
 
-        public async Task<bool> GivePermission(User user , List<string> permissions)
+        public async Task<bool> GivePermission(User user, List<string> permissions)
         {
             permissions = permissions.Distinct().ToList();
-            foreach(var permission in permissions)
+            foreach (var permission in permissions)
             {
                 // Check if the permission already exists
                 var roleId = await _dbContext.Roles.Where(role => role.Name.ToLower() == permission.ToLower()).Select(role => role.Id).FirstOrDefaultAsync();
 
-                UserRole useRole = new UserRole
+                UserRole useRole = new()
                 {
                     UserId = user.Id,
                     RoleId = roleId,
@@ -111,7 +110,7 @@ namespace MovieApi.Repository
             return true;
         }
 
-      
+
         public async Task<User?> RegisterAsync(User user)
         {
             var checkUser = _dbContext.Users.Where(u => u.Email == user.Email);
@@ -126,11 +125,11 @@ namespace MovieApi.Repository
                 await _dbContext.SaveChangesAsync();
                 return entityEntry.Entity;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return null;
             }
-           
+
         }
 
         public string? GetUserIdFromTokenAsync(string token)
@@ -143,5 +142,29 @@ namespace MovieApi.Repository
             return userIdClaim?.Value;
         }
 
+        public async Task<User> UpdateUserAsync(Guid id, UpdateUserDto user)
+        {
+            try
+            {
+                var exitingUser = await _dbContext.Users.FindAsync(id);
+                if (exitingUser != null)
+                {
+                    exitingUser.Name = string.IsNullOrEmpty(user.Name) ? exitingUser.Name : user.Name;
+                    exitingUser.Email = string.IsNullOrEmpty(user.Email) ? exitingUser.Email : user.Email;
+                    exitingUser.Password = string.IsNullOrEmpty(user.Password) ? exitingUser.Password : user.Password;
+                    exitingUser.PhoneNumber = string.IsNullOrEmpty(user.PhoneNumber) ? exitingUser.PhoneNumber : user.PhoneNumber;
+                    exitingUser.BirthDate = user.BirthDate.HasValue ? user.BirthDate : exitingUser.BirthDate;
+
+                    await _dbContext.SaveChangesAsync();
+
+                    return exitingUser;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return null;
+        }
     }
 }

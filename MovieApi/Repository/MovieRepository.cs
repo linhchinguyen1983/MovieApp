@@ -58,10 +58,9 @@ namespace MovieApi.Repository
         public async Task<Movies> UpdateMovieAsync(Guid id, UpdateMovieDto updateMovieDto)
         {
             var movie = await _movieDbContext.Movies.FindAsync(id);
-            if (movie != null) { return null; }
+            if (movie == null) { return null; }
             else
             {
-                movie.Url = updateMovieDto.Url;
                 movie.Title = updateMovieDto.Title;
                 movie.Description = updateMovieDto.Description;
                 movie.AgeRating = updateMovieDto.AgeRating;

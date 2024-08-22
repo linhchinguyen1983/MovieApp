@@ -10,8 +10,8 @@ namespace MovieApi.Model.Dto
         [Required(ErrorMessage = "Movie's tilte must not be empty")]
         public string Title { get; set; }
         [Required(ErrorMessage = "Movie's description must not be empty")]
-        public string Description { get; set; }
-        public int? AgeRating { get; set; }
+        public string? Description { get; set; }
+        public int AgeRating { get; set; }
         public int Status {get; set; }
         [Required(ErrorMessage = "Movie's url must not be null")]
         public string Url { get; set; }

@@ -6,7 +6,7 @@
 
         public string Name { get; set; }
 
-        public int Status { get; set; } = 1;
+        public int Status { get; set; }
 
     }
 

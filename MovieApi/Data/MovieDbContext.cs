@@ -17,6 +17,8 @@ namespace MovieApi.Data
         public DbSet<Actors> Actors { get; set; }
         public DbSet<Movies> Movies { get; set; }
         public DbSet<MovieActors> MoviesActors { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<News> News { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,19 +26,22 @@ namespace MovieApi.Data
             modelBuilder.Entity<MovieActors>().HasKey(x => new {x.MoviesId, x.ActorsId});
             base.OnModelCreating(modelBuilder);
 
-            List<Role> roles = new List<Role>()
+            List<Role> roles = new()
             {
-                new Role
-                {
+                new() {
                     Id = Guid.Parse("79e41692-64f5-4789-ac63-f266f7b8ac8e"),
-                    Name = "reader",
+                    Name = "admin",
                 },
-                new Role
-                {
+                new() {
                     Id = Guid.Parse("0a1ab76c-f48f-4a5c-bb96-322f0b94328a"),
-                    Name = "writer",
+                    Name = "user",
+                },
+                new() {
+                    Id = Guid.Parse("c005b7d5-ffc0-45a2-bd74-12a780fd9b61"),
+                    Name = "vip user",
                 }
             };
+
 
             modelBuilder.Entity<Role>().HasData(roles);
 

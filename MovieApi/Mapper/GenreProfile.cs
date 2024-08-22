@@ -10,6 +10,7 @@ namespace MovieApi.Mapper
         {
             CreateMap<Genres, GenreDto>().ReverseMap();
             CreateMap<Genres, AddGenreRequestDto>().ReverseMap();
+            CreateMap<Genres, UpdateGenreDto>().ReverseMap();
         }
     }
 }

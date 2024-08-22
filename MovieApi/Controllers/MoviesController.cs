@@ -55,7 +55,7 @@ namespace MovieApi.Controllers
             {
                 return StatusCode(500);
             }
-            return Ok(_mapper.Map<MovieDto>(newMovie));
+            return Ok(_mapper.Map<Movies>(newMovie));
         }
 
         [HttpDelete]

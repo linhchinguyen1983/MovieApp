@@ -41,5 +41,6 @@ namespace MovieApi.Repository
         public string? GetUserIdFromTokenAsync(string token);
 
         public Task<User> UpdateUserAsync(Guid id, UpdateUserDto user);
+        public Task<List<User>> GetUserListAsync();
     }
 }

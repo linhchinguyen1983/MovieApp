@@ -97,7 +97,7 @@ namespace MovieApi.Controllers
 
 
         [HttpPut]
-        [Route("Update")]
+        [Route("Update/{userId}")]
         public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid userId, [FromBody] UpdateUserDto updateUserDto)
         {
             if (userId == Guid.Empty) return Unauthorized();
@@ -106,6 +106,7 @@ namespace MovieApi.Controllers
             if (user == null) return StatusCode(500);
             return Ok(_mapper.Map<User>(user));
         }
+
 
         [HttpGet]
         [Route("users")]

@@ -11,6 +11,7 @@ namespace MovieApi.Mapper
             //mapper Object User to RequestRegisterDto and reverse
             CreateMap<User, RequestRegisterDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User,UpdateUserDto>().ReverseMap();
         }
     }
 }

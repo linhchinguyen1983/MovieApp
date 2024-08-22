@@ -88,5 +88,24 @@ namespace MovieApi.Controllers
         {
             return Ok();
         }
+        [HttpGet]
+        [Route("search")]
+        public async Task<IActionResult> SearchMovieByName([FromQuery] string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return BadRequest("Search term cannot be empty.");
+            }
+
+            var movies = await _movieRepository.SearchMovieByNameAsync(name);
+
+            if (movies == null || !movies.Any())
+            {
+                return NotFound("No movies found.");
+            }
+
+            var movieDtos = _mapper.Map<List<MovieDto>>(movies);
+            return Ok(movieDtos);
+        }
     }
 }

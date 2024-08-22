@@ -28,7 +28,7 @@ namespace MovieApi.Controllers
         {
             var movie = await _movieRepository.GetMovieAsync(id);
             //mapping data to dto and send it to client
-            return Ok(_mapper.Map<MovieDto>(movie));
+            return Ok(_mapper.Map<Movies>(movie));
         }
 
         [HttpGet]
@@ -37,7 +37,7 @@ namespace MovieApi.Controllers
         {
             var movies = await _movieRepository.GetAllMoviesAsync();
             //mapping data to dto and send it to client
-            return Ok(_mapper.Map<List<MovieDto>>(movies));
+            return Ok(_mapper.Map<List<Movies>>(movies));
         }
         [HttpPost]
         //[SessionRequirement("admin")]
@@ -79,7 +79,7 @@ namespace MovieApi.Controllers
             }
             var movie = await _movieRepository.UpdateMovieAsync(id, updateMovieDto);
             if(movie != null) return StatusCode(500);
-            return Ok(_mapper.Map<MovieDto>(movie));
+            return Ok(_mapper.Map<Movies>(movie));
         }
 
         [HttpPost]
